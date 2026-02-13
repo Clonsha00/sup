@@ -87,7 +87,7 @@ const ScratchBoard = ({ onZone1Reveal, onZone2Reveal, onZone3Reveal, onZone4Reve
                 </div>
             ),
             onRedeem: onZone1Reveal,
-            redeemLabel: "領取回憶",
+            redeemLabel: "兌獎",
             hint: "您的號碼 對中 幸運號碼 得獎"
         },
         {
@@ -116,7 +116,7 @@ const ScratchBoard = ({ onZone1Reveal, onZone2Reveal, onZone3Reveal, onZone4Reve
                 </div>
             ),
             onRedeem: onZone2Reveal,
-            redeemLabel: "查看天數",
+            redeemLabel: "兌獎",
             hint: "連線 您的號碼 得獎"
         },
         {
@@ -149,8 +149,8 @@ const ScratchBoard = ({ onZone1Reveal, onZone2Reveal, onZone3Reveal, onZone4Reve
                 </div>
             ),
             onRedeem: onZone3Reveal,
-            redeemLabel: "領取獎品",
-            hint: "刮出 3個相同符號 得獎" // 簡化說明
+            redeemLabel: "兌獎",
+            hint: "刮出寵物相關物品得分 🐶獲勝即中獎"
         },
         {
             id: 4,
@@ -160,15 +160,15 @@ const ScratchBoard = ({ onZone1Reveal, onZone2Reveal, onZone3Reveal, onZone4Reve
             width: 400,
             height: 200,
             renderContent: () => (
-                <div className="prize-content envelope-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div className="prize-content envelope-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
                     <div className="pixel-envelope-icon">
                         <div className="envelope-body"><span className="heart-seal">❤️</span></div>
                     </div>
-                    <div className="open-text">點擊開啟</div>
+                    <div style={{ fontSize: '14px', color: '#999', fontFamily: 'inherit' }}>💌 一封神秘的信件</div>
                 </div>
             ),
             onRedeem: onZone4Reveal,
-            redeemLabel: "開啟信件",
+            redeemLabel: "兌獎",
             hint: "刮開信封 開啟驚喜"
         }
     ];
@@ -237,7 +237,7 @@ const ScratchBoard = ({ onZone1Reveal, onZone2Reveal, onZone3Reveal, onZone4Reve
                                 width={currentCard.width}
                                 height={currentCard.height}
                                 brushSize={30}
-                                revealThreshold={0.95}
+                                revealThreshold={0.98}
                                 forceRevealed={scratchedZones[currentCard.id]}
                                 onReveal={() => handleScratchComplete(currentCard.id)}
                             >

@@ -83,8 +83,11 @@ const ScratchZone = ({
             if (e.buttons !== 1) return; // Only scratch if mouse is pressed
         }
 
-        const x = clientX - rect.left;
-        const y = clientY - rect.top;
+        // Account for CSS transforms (scale) on parent elements
+        const scaleX = rect.width / canvas.width;
+        const scaleY = rect.height / canvas.height;
+        const x = (clientX - rect.left) / scaleX;
+        const y = (clientY - rect.top) / scaleY;
 
         ctx.globalCompositeOperation = 'destination-out';
         ctx.beginPath();

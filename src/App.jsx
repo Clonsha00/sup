@@ -53,7 +53,7 @@ function App() {
       )}
 
       {gameState === GAME_STATE.SCENE_LETTER && (
-        <FinalLetter />
+        <FinalLetter onBack={backToHub} />
       )}
     </div>
   );
