@@ -1,0 +1,666 @@
+.scratch-board-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background: radial-gradient(circle, #ea1f1f 10%, #8a0c0c 90%);
+    overflow-y: auto;
+    /* Allow scroll on small screens if needed */
+}
+
+.lottery-ticket {
+    background: #fffdf0;
+    /* Creamy paper */
+    border: 8px solid #ffcc00;
+    border-radius: 20px;
+    width: 600px;
+    /* Reduced width for single card */
+    min-height: 500px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.3s ease;
+
+    /* Decorative Pattern */
+    background-image:
+        radial-gradient(#ffe6e6 15%, transparent 16%),
+        radial-gradient(#ffe6e6 15%, transparent 16%);
+    background-size: 30px 30px;
+    background-position: 0 0, 15px 15px;
+
+    &.single-card {
+        justify-content: flex-start;
+    }
+}
+
+/* Navigation Controls */
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #fff;
+    border: 4px solid #333;
+    color: #333;
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+
+    &:hover {
+        transform: translateY(-50%) scale(1.1);
+        background: #ffcc00;
+    }
+
+    &:active {
+        transform: translateY(-50%) scale(0.95);
+    }
+
+    &:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        transform: translateY(-50%);
+    }
+
+    &.prev {
+        left: 20px;
+    }
+
+    &.next {
+        right: 20px;
+    }
+
+    @media (max-width: 768px) {
+        top: auto;
+        bottom: 20px;
+        transform: translateY(0);
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+        background: rgba(255, 255, 255, 0.9);
+
+        &.prev {
+            left: 20px;
+        }
+
+        &.next {
+            right: 20px;
+        }
+
+        &:hover {
+            transform: scale(1.1);
+            /* No translateY on hover for mobile */
+        }
+    }
+}
+
+.nav-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        background: rgba(255, 255, 255, 0.3);
+        border: 2px solid white;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s;
+
+        &.active {
+            background: #fff;
+            transform: scale(1.2);
+        }
+
+        &.completed {
+            background: #00ff00;
+            border-color: #00ff00;
+        }
+    }
+}
+
+.ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px dashed;
+    /* Color set inline */
+    padding-bottom: 10px;
+    margin-bottom: 5px;
+
+    .mascot {
+        font-size: 2.5rem;
+        animation: bounce 1s infinite alternate;
+    }
+
+    .title-block {
+        text-align: center;
+
+        .main-title {
+            font-size: 1.8rem;
+            color: #d10000;
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .sub-title {
+            font-size: 0.9rem;
+            color: #fff;
+            background: #ffcc00;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 10px;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+    }
+}
+
+.ticket-body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+/* Remove old columns layout */
+.ticket-col,
+.zones-row {
+    display: none;
+}
+
+.zone-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+
+    &.wide {
+        width: 100%;
+    }
+
+    /* Hide Zone Label as it's now in header */
+    .zone-label {
+        display: none;
+    }
+
+    .zone-hint {
+        font-size: 0.9rem;
+        color: #666;
+        font-weight: bold;
+        background: rgba(255, 255, 255, 0.5);
+        padding: 4px 10px;
+        border-radius: 10px;
+    }
+}
+
+.zone-split-layout {
+    display: grid;
+    grid-template-columns: 0.8fr 2fr;
+    /* Adjust ratio for better spacing */
+    gap: 25px;
+    /* Increased gap */
+    width: 100%;
+    height: 100%;
+    align-items: center;
+
+    .section {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        /* Space between numbers */
+
+        &.lucky {
+            border-right: 2px dashed rgba(0, 0, 0, 0.1);
+            padding-right: 15px;
+            /* Add breathing room */
+        }
+    }
+}
+
+.prize-content {
+    font-weight: bold;
+    color: #d10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+
+    /* Zone 2: Bingo (Old - removed) */
+
+    .lucky-num {
+        font-size: 2.2rem;
+        /* Scaled up */
+        border: 3px solid #d10000;
+        border-radius: 50%;
+        width: 60px;
+        /* Scaled up */
+        height: 60px;
+        /* Scaled up */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+    }
+
+    /* Zone 3: Battle */
+    &.battle {
+        justify-content: space-between;
+        padding: 0 30px;
+        background: #f0f0f0;
+
+        .team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 40%;
+
+            .icon {
+                font-size: 2.5rem;
+            }
+
+            /* Scaled up */
+            .score {
+                font-size: 1.2rem;
+                color: #555;
+            }
+
+            .bar-container {
+                width: 100%;
+                height: 12px;
+                /* Scaled up */
+                background: #ddd;
+                border-radius: 6px;
+                margin: 6px 0;
+                overflow: hidden;
+
+                .bar {
+                    height: 100%;
+                    background: #888;
+                }
+            }
+
+            &.win {
+                .score {
+                    color: #d10000;
+                    font-weight: bold;
+                    transform: scale(1.2);
+                }
+
+                .bar-container .bar {
+                    background: #ff0055;
+                }
+            }
+        }
+
+        .vs-badge {
+            font-style: italic;
+            color: #ffaa00;
+            font-weight: 900;
+            font-size: 1.8rem;
+            /* Scaled up */
+        }
+    }
+
+
+
+    &.envelope {
+        font-size: 2rem;
+        /* Scaled up */
+        animation: pulse 1s infinite alternate;
+    }
+}
+
+
+/* Zone 3: Treasure (Moved out for correct scope) */
+.treasure-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.treasure-item {
+    width: 60px;
+    height: 60px;
+    border: 2px dashed #ccc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Zone 4: Envelope */
+.envelope-container {
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pixel-envelope-icon {
+    width: 100px;
+    height: 70px;
+    background: #f0f0f0;
+    border: 4px solid #333;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+
+    /* Envelope Flap (Triangle using borders) */
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 46px 35px 46px;
+        /* Adjust according to width */
+        border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+        z-index: 1;
+        pointer-events: none;
+        /* Simple visual trick, might need refinement for perfect triangle */
+    }
+
+    /* Actual Flap Lines (CSS gradients or borders are better for pixel art) */
+    /* Let's keep it simple: A red heart seal in the middle */
+
+    .envelope-body {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        background: repeating-linear-gradient(-45deg,
+                #fff,
+                #fff 10px,
+                #f9f9f9 10px,
+                #f9f9f9 20px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .heart-seal {
+        font-size: 2rem;
+        z-index: 2;
+        animation: pulse 1s infinite;
+        filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.2));
+    }
+}
+
+.open-text {
+    font-size: 0.8rem;
+    color: #d10000;
+    font-weight: bold;
+    animation: bounce 1s infinite;
+}
+
+.ticket-footer {
+    text-align: center;
+    font-size: 0.6rem;
+    color: #888;
+    margin-top: 10px;
+    font-family: monospace;
+}
+
+@keyframes bounce {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes pulse {
+    from {
+        opacity: 0.8;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Redeem Button Styles */
+.zone-container {
+    position: relative;
+    display: inline-block;
+}
+
+.redeem-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.4);
+    /* Slight dim to make button pop */
+    border-radius: 8px;
+    animation: fadeIn 0.5s ease;
+    z-index: 20;
+}
+
+.redeem-btn {
+    font-size: 0.8rem !important;
+    padding: 0.5rem 1rem !important;
+    border: 2px solid white !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    animation: popIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    animation-delay: 0.8s;
+    /* Wait for numbers to reveal first */
+    animation-fill-mode: backwards;
+    /* Stay hidden (scale 0) during delay */
+    margin-top: 5px;
+    /* Add spacing below the scratch zone */
+    z-index: 50;
+
+    &:hover {
+        transform: scale(1.1) !important;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Wavy Background Pattern */
+.wavy-bg {
+    background:
+        repeating-linear-gradient(45deg,
+            #ffe6f2,
+            #ffe6f2 10px,
+            #e6f2ff 10px,
+            #e6f2ff 20px);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+.zone-split-layout {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    padding: 5px;
+    gap: 5px;
+
+    .section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 2px dashed #ffcc00;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 5px;
+        padding: 2px;
+
+        &.lucky {
+            width: 35%;
+            background: #fff0f5;
+        }
+
+        &.yours {
+            width: 65%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px 5px;
+            /* Row gap 15px, Col gap 5px */
+            align-items: center;
+        }
+
+        .label {
+            font-size: 1rem;
+            /* Scaled up */
+            color: #ff0055;
+            margin-bottom: 4px;
+            white-space: nowrap;
+        }
+
+        .num-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .the-num {
+                font-size: 1.3rem;
+                /* Scaled up */
+                font-weight: bold;
+                color: #333;
+                transition: all 0.5s ease;
+
+                &.win {
+                    color: #d10000;
+                    border: 2px solid #d10000;
+                    border-radius: 4px;
+                    padding: 0 4px;
+                    animation: popIn 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+                    background-color: #fff0f5;
+                }
+            }
+
+            .the-text {
+                font-size: 0.5rem;
+                /* Scaled up */
+                color: #666;
+                margin-top: 2px;
+                line-height: 1;
+            }
+        }
+    }
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes drawCircle {
+    from {
+        clip-path: polygon(0 0, 0 0, 0 0);
+    }
+
+    to {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+}
+
+/* Bingo Grid Cells (Global) */
+.b-cell {
+    width: 42px;
+    height: 42px;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background: white;
+    color: #333;
+    border-radius: 4px;
+    position: relative;
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+
+    &.circled {
+        &::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 3px solid #ff0055;
+            border-radius: 50% 40% 60% 50% / 40% 50% 60% 50%;
+            transform: rotate(-10deg);
+            animation: drawCircle 0.5s ease forwards;
+            pointer-events: none;
+        }
+    }
+}
+
+/* Custom Cursor for Scratch Zones */
+.scratch-zone {
+    /* Cursor is now handled by CustomCursor.jsx */
+    cursor: none;
+    touch-action: none;
+    transition: transform 0.1s;
+
+    &:active {
+        transform: scale(0.995);
+    }
+
+    &.revealed {
+        cursor: default;
+        pointer-events: none;
+    }
+}

@@ -1,0 +1,41 @@
+.custom-cursor-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
+    z-index: 9999;
+    /* Center the cursor on the mouse point */
+    margin-left: -20px;
+    margin-top: -20px;
+    will-change: transform;
+}
+
+.cursor-coin {
+    font-size: 40px;
+    line-height: 1;
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
+    transition: transform 0.1s ease-out;
+    transform-origin: center center;
+
+    /* Idle state: straight up or slight tilt */
+    transform: rotate(0deg);
+
+    &.scratching {
+        /* Scratching state: Just Tilt, NO Wiggle */
+        transform: rotate(-30deg) scale(0.9);
+    }
+}
+
+/* Hide default cursor on body or specific areas if you want */
+body {
+    cursor: none;
+    /* Simply modify global cursor for immersive feel, or scope it */
+}
+
+/* Ensure accessible elements override if needed, but for this game we want the coin everywhere */
+a,
+button {
+    cursor: none !important;
+}
